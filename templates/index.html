@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Stage Prediction System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Diabetes Stage Prediction System</h1>
+            <p class="subtitle">Predict diabetes stages using advanced ML models</p>
+        </header>
+
+        <div class="main-content">
+            <div class="form-container">
+                <h2>Enter Patient Information</h2>
+                <form id="predictionForm">
+                    <div class="form-group">
+                        <label for="hba1c">HbA1c (%)</label>
+                        <input type="number" id="hba1c" name="hba1c" step="0.01" min="0" max="20" required>
+                        <small>Normal: 4-5.6%, Pre-diabetes: 5.7-6.4%, Diabetes: ≥6.5%</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="diagnosed_diabetes">Diagnosed Diabetes</label>
+                        <select id="diagnosed_diabetes" name="diagnosed_diabetes" required>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="glucose_fasting">Glucose Fasting (mg/dL)</label>
+                        <input type="number" id="glucose_fasting" name="glucose_fasting" step="0.1" min="0" max="500" required>
+                        <small>Normal: <100, Pre-diabetes: 100-125, Diabetes: ≥126</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="glucose_postprandial">Glucose Postprandial (mg/dL)</label>
+                        <input type="number" id="glucose_postprandial" name="glucose_postprandial" step="0.1" min="0" max="500" required>
+                        <small>Normal: <140, Pre-diabetes: 140-199, Diabetes: ≥200</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="family_history_diabetes">Family History of Diabetes</label>
+                        <select id="family_history_diabetes" name="family_history_diabetes" required>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="diabetes_risk_score">Diabetes Risk Score</label>
+                        <input type="number" id="diabetes_risk_score" name="diabetes_risk_score" step="0.1" min="0" max="100" required>
+                        <small>Risk score based on various factors (0-100)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hypertension_history">Hypertension History</label>
+                        <select id="hypertension_history" name="hypertension_history" required>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" id="predictBtn" class="btn btn-primary">Predict Diabetes Stage</button>
+                        <button type="button" id="analyzeBtn" class="btn btn-secondary">Analyze Dashboard</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="result-container" id="resultContainer" style="display: none;">
+                <h2>Prediction Result</h2>
+                <div class="result-card">
+                    <div class="prediction-badge" id="predictionBadge"></div>
+                    <h3 id="predictionText"></h3>
+                    <div class="probabilities" id="probabilities"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="loading" id="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Processing prediction...</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Analytics Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .dashboard-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+        
+        .dashboard-header h2 {
+            color: #333;
+            font-size: 1.8em;
+        }
+        
+        .btn-back {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .stat-card h3 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .chart-container {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+        
+        .chart-container h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .tableau-placeholder {
+            background: #e0e0e0;
+            padding: 100px;
+            text-align: center;
+            border-radius: 10px;
+            color: #666;
+            border: 2px dashed #999;
+        }
+        
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .instructions h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+            color: #856404;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Diabetes Analytics Dashboard</h1>
+            <p class="subtitle">Comprehensive analysis and visualization of diabetes predictions</p>
+        </header>
+        
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h2>Dashboard Overview</h2>
+                <a href="/" class="btn-back">← Back to Prediction</a>
+            </div>
+
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <h3 id="totalPredictions">0</h3>
+                    <p>Total Predictions</p>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <h3 id="type2Count">0</h3>
+                    <p>Type 2 Diabetes</p>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #333;">
+                    <h3 id="prediabetesCount">0</h3>
+                    <p>Pre-Diabetes</p>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333;">
+                    <h3 id="noDiabetesCount">0</h3>
+                    <p>No Diabetes</p>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Tableau Dashboard</h3>
+                <div id="tableauContainer" style="width: 100%; height: 820px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: #f5f5f5;">
+                    <iframe 
+                        id="tableauIframe"
+                        src=""
+                        frameborder="0"
+                        style="width: 100%; height: 100%; border: none;"
+                        allowfullscreen
+                        allow="fullscreen"
+                        sandbox="allow-same-origin allow-scripts allow-popups allow-forms">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load statistics from API (if available)
+        async function loadStatistics() {
+            try {
+                // You can create an API endpoint to fetch statistics
+                // For now, we'll use placeholder values
+                const response = await fetch('/api/statistics');
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('totalPredictions').textContent = data.total_patients || 0;
+                    document.getElementById('type2Count').textContent = data.stage_distribution['Type 2'] || 0;
+                    document.getElementById('prediabetesCount').textContent = data.stage_distribution['Pre-Diabetes'] || 0;
+                    document.getElementById('noDiabetesCount').textContent = data.stage_distribution['No Diabetes'] || 0;
+                }
+            } catch (error) {
+                console.log('Statistics API not available, using default values');
+            }
+        }
+        
+        // Load statistics on page load
+        loadStatistics();
+
+        // Note: Data export is now automatic after each prediction
+        // No manual export button needed - tableau_export.csv updates automatically
+
+        // Load Tableau viz URL from backend config and embed via iframe
+        async function loadTableauViz() {
+            try {
+                const resp = await fetch('/api/tableau-config');
+                const cfg = await resp.json();
+                const iframe = document.getElementById('tableauIframe');
+                
+                let vizUrl = '';
+                if (cfg && cfg.viz_url) {
+                    vizUrl = cfg.viz_url;
+                } else {
+                    // Default format for Tableau Public
+                    vizUrl = 'https://public.tableau.com/views/Project-CDAC/Dashboard1?:showVizHome=no&:embed=true';
+                }
+                
+                // Set iframe source
+                iframe.src = vizUrl;
+                
+            } catch (e) {
+                console.log('Could not load tableau config:', e);
+                const iframe = document.getElementById('tableauIframe');
+                const defaultUrl = 'https://public.tableau.com/views/Project-CDAC/Dashboard1?:showVizHome=no&:embed=true';
+                if (iframe) {
+                    iframe.src = defaultUrl;
+                }
+            }
+        }
+
+        // Auto-refresh loop: poll stats; if total changes, refresh UI KPIs
+        let lastTotal = null;
+        async function autoRefreshLoop() {
+            try {
+                const resp = await fetch('/api/statistics');
+                if (!resp.ok) return;
+                const data = await resp.json();
+                const total = data.total_patients || 0;
+                if (lastTotal === null) lastTotal = total;
+                if (total !== lastTotal) {
+                    lastTotal = total;
+                    // Refresh UI KPIs (data already exported automatically in /predict endpoint)
+                    await loadStatistics();
+                    // Note: Tableau Public iframe cannot be programmatically refreshed
+                    // Users need to refresh the data source in Tableau Desktop and republish
+                }
+            } catch (e) {
+                // ignore
+            }
+        }
+
+        // Load dashboard on page load
+        loadTableauViz();
+        // Poll for new predictions every 10 seconds
+        setInterval(autoRefreshLoop, 10000);
+    </script>
+</body>
+</html>
+
