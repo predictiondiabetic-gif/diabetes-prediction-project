@@ -1,0 +1,20 @@
+# Model Features List
+# This is the original feature list used to train the diabetes prediction model
+
+Features (in order):
+1. hba1c
+2. diagnosed_diabetes
+3. glucose_fasting
+4. glucose_postprandial
+5. family_history_diabetes
+6. diabetes_risk_score
+7. hypertension_history
+
+Total: 7 features
+
+These features are used for:
+- Training the Random Forest Classifier
+- Making predictions via the Flask API
+- Exporting data to Tableau
+
+
